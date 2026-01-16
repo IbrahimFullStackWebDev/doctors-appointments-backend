@@ -2,7 +2,7 @@ import { supabase } from "../config/supabase.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import createToken from "../utils/createToken.js";
+import { createToken } from "../utils/createTokens.js";
 export const userRegister = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
