@@ -74,3 +74,4 @@ src/
 5. **🤝 Linked Repository:**
 
 - You can find the Frontend of this project here:https://github.com/IbrahimFullStackWebDev/doctors-appointments-frontend.git
+- You can find the Admin of this project here:https://github.com/IbrahimFullStackWebDev/doctors-appointments-admin.git
