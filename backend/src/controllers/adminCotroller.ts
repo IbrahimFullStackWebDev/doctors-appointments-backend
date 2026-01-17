@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import "dotenv/config";
 import { createAdminToken } from "../utils/createTokens.js";
-import { DoctorDataType } from "../types/index.js";
+import { type DoctorDataType } from "../types/index.js";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import { supabase } from "../config/supabase.js";
@@ -114,5 +114,25 @@ export const addDoctor = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getDoctors = async (req: Request, res: Response) => {
+  try {
+    const { data, error } = await supabase
+      .from<"doctors", DoctorDataType[]>("doctors")
+      .select(
+        "id, name, email, image, speciality, degree, experience, about, fees, address",
+      );
+    if (error) throw error;
+    res.json({
+      success: true,
+      message: "Get all doctors successful.",
+      doctors: data,
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.log(err);
+    res.status(404).json({ success: false, message: err.message });
   }
 };

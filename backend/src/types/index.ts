@@ -6,14 +6,14 @@ export interface DoctorDataType {
   id?: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   speciality: string;
   degree: string;
   experience: string;
   about: string;
   fees: string;
   address: Address;
-  image?: string;
+  image: string;
   date?: number;
 }
 export interface DecodedToken {
