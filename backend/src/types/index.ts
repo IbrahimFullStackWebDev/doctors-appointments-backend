@@ -1,20 +1,24 @@
-export interface Doctor {
-  id: string;
+interface Address {
+  line1: string;
+  line2: string;
+}
+export interface DoctorDataType {
+  id?: string;
   name: string;
   email: string;
+  password: string;
   speciality: string;
   degree: string;
   experience: string;
   about: string;
-  fees: number;
-  address: string;
-  image: string;
-  date: number;
-  slots_booked: Record<string, any>;
+  fees: string;
+  address: Address;
+  image?: string;
+  date?: number;
 }
 export interface DecodedToken {
   id: string;
   role: string;
-  iat: number;
-  exp: number;
+  iat?: number;
+  exp?: number;
 }
