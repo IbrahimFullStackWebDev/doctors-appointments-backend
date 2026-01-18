@@ -122,7 +122,7 @@ export const getDoctors = async (req: Request, res: Response) => {
     const { data, error } = await supabase
       .from<"doctors", DoctorDataType[]>("doctors")
       .select(
-        "id, name, email, image, speciality, degree, experience, about, fees, address",
+        "id, name, email, image, speciality, degree, experience, available, about, fees, address",
       );
     if (error) throw error;
     res.json({
@@ -134,5 +134,29 @@ export const getDoctors = async (req: Request, res: Response) => {
     const err = error as Error;
     console.log(err);
     res.status(404).json({ success: false, message: err.message });
+  }
+};
+
+export const changeAvailability = async (req: Request, res: Response) => {
+  try {
+    const { available, doctorId } = req.body;
+    if (doctorId === undefined || available === undefined) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+    const { error } = await supabase
+      .from("doctors")
+      .update({ available: Boolean(available) })
+      .eq("id", Number.parseInt(doctorId));
+    if (error) throw error;
+    res.json({
+      success: true,
+      message: "Update doctor availability successful.",
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
