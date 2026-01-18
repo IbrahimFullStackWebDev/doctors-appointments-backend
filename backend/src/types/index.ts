@@ -3,22 +3,29 @@ interface Address {
   line2: string;
 }
 export interface DoctorDataType {
-  id?: string;
+  id: number;
   name: string;
-  email: string;
-  password?: string;
+  image: string;
   speciality: string;
   degree: string;
   experience: string;
   about: string;
-  fees: string;
+  available: boolean;
+  fees: number;
   address: Address;
-  image: string;
-  date?: number;
 }
 export interface DecodedToken {
   id: string;
   role: string;
   iat?: number;
   exp?: number;
+}
+export interface BookAppointmentsType {
+  userId?: number;
+  doctorId: number;
+  slotDate: string;
+  slotTime: string;
+  amount: number;
+  status?: string;
+  payment?: boolean;
 }

@@ -95,7 +95,7 @@ export const addDoctor = async (req: Request, res: Response) => {
           about,
           image: imageUrl,
           fees: Number(fees),
-          address: JSON.stringify(address),
+          address,
           date: Date.now(),
         },
       ])
