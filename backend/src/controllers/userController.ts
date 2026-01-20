@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { createToken } from "../utils/createTokens.js";
 import { BookAppointmentsType, DoctorDataType } from "../types/index.js";
+import uploadImage from "../utils/uploadImage.js";
 export const userRegister = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
@@ -26,7 +27,7 @@ export const userRegister = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const { data, error } = await supabase
+    const { data: user, error } = await supabase
       .from("users")
       .insert([{ name, email, password: hashedPassword }])
       .select();
@@ -37,11 +38,12 @@ export const userRegister = async (req: Request, res: Response) => {
       }
       throw error;
     }
-    const uToken = createToken(data[0].id);
+    const uToken = createToken(user[0].id);
     res.json({
       success: true,
       message: "User registered successfully",
       uToken: uToken,
+      user: user,
     });
   } catch (error: any) {
     console.log(error);
@@ -59,7 +61,7 @@ export const userLogin = async (req: Request, res: Response) => {
 
     const { data: user, error } = await supabase
       .from("users")
-      .select()
+      .select("*")
       .eq("email", email)
       .single();
 
@@ -69,7 +71,12 @@ export const userLogin = async (req: Request, res: Response) => {
     const isMatch: boolean = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const uToken = createToken(user.id);
-      res.json({ success: true, uToken });
+      res.json({
+        success: true,
+        message: "User Login Successful.",
+        uToken,
+        user: user,
+      });
     } else {
       res.json({ success: false, message: "Invalid credentials" });
     }
@@ -101,7 +108,6 @@ export const getDoctors = async (req: Request, res: Response) => {
 
 export const bookAppointment = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { doctorId, slotDate, slotTime, amount } =
       req.body as BookAppointmentsType;
 
@@ -158,5 +164,43 @@ export const bookAppointment = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { name, email, phone, address, gender, dob } = req.body;
+    let imageUrl: string = "";
+
+    if (req.file) {
+      imageUrl = await uploadImage(req.file);
+      const { error } = await supabase
+        .from("users")
+        .update({ image: imageUrl })
+        .eq("id", Number.parseInt(req.body.userId));
+      if (error) throw error;
+    }
+
+    const { error } = await supabase
+      .from("users")
+      .update({
+        name,
+        email,
+        phone,
+        address: JSON.parse(address),
+        gender,
+        dob: Number(dob),
+      })
+      .eq("id", Number.parseInt(req.body.userId));
+    if (error) throw error;
+    res.json({
+      success: true,
+      message: "Update doctor availability successful.",
+      imageUrl,
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };

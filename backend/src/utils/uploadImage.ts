@@ -14,7 +14,7 @@ const uploadImage = async (image: Express.Multer.File): Promise<string> => {
 
   if (!publicUrlData.publicUrl) throw new Error("Failed to get public URL");
 
-  return publicUrlData.publicUrl;
+  return publicUrlData.publicUrl as string;
 };
 
 export default uploadImage;

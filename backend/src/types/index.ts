@@ -5,6 +5,8 @@ interface Address {
 export interface DoctorDataType {
   id: number;
   name: string;
+  email?: string;
+  password?: string;
   image: string;
   speciality: string;
   degree: string;

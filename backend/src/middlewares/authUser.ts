@@ -13,7 +13,6 @@ const authUser = (req: Request, res: Response, next: NextFunction) => {
       req.headers.utoken as string,
       process.env.JWT_SECRET!,
     ) as unknown as DecodedToken;
-    console.log(decoded_token);
 
     if (!decoded_token.id || decoded_token.role !== "user") {
       return res.json({ success: false, message: "Not an user" });
