@@ -42,3 +42,23 @@ export interface UserAppointmentInfo {
     address: Address;
   };
 }
+
+export interface AppointmentsType {
+  AppointmentInfo: {
+    id: number;
+    payment: boolean;
+    slotDate: string;
+    slotTime: string;
+    status: string;
+    amount: number;
+  };
+
+  patientInfo: {
+    name: string;
+    image: string;
+  };
+  doctorInfo: {
+    name: string;
+    image: string;
+  };
+}
