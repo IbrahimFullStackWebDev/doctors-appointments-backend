@@ -1,7 +1,9 @@
 import express, { Router } from "express";
 import {
   bookAppointment,
+  changeStatus,
   getDoctors,
+  getUserAppointments,
   updateProfile,
   userLogin,
   userRegister,
@@ -21,5 +23,7 @@ userRouter.put(
   authUser,
   updateProfile,
 );
+userRouter.post("/appointments", authUser, getUserAppointments);
+userRouter.put("/change-status", authUser, changeStatus);
 
 export default userRouter;

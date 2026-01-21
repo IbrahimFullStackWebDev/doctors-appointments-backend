@@ -23,6 +23,7 @@ export interface DecodedToken {
   exp?: number;
 }
 export interface BookAppointmentsType {
+  id: number;
   userId?: number;
   doctorId: number;
   slotDate: string;
@@ -30,4 +31,14 @@ export interface BookAppointmentsType {
   amount: number;
   status?: string;
   payment?: boolean;
+}
+
+export interface UserAppointmentInfo {
+  AppointmentsInfo: BookAppointmentsType;
+  doctorInfo: {
+    image: string;
+    name: string;
+    speciality: string;
+    address: Address;
+  };
 }
