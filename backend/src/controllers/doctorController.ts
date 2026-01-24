@@ -166,3 +166,27 @@ export const changeStatus = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { fees, address, available } = req.body;
+
+    const { error } = await supabase
+      .from("doctors")
+      .update({
+        fees: Number(fees),
+        address: JSON.parse(address),
+        available: available === "true" ? true : false,
+      })
+      .eq("id", Number.parseInt(req.body.doctorId));
+    if (error) throw error;
+    res.json({
+      success: true,
+      message: "Update doctor Information is successful.",
+    });
+  } catch (error) {
+    const err = error as Error;
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

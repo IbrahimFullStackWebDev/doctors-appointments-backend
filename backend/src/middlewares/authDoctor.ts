@@ -18,6 +18,7 @@ const authDoctor = (req: Request, res: Response, next: NextFunction) => {
       return res.json({ success: false, message: "Not an doctor" });
     }
     req.body.doctorId = decoded_token.id;
+
     next();
   } catch (error) {
     console.log(error);
