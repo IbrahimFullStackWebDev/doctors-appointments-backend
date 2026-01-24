@@ -63,6 +63,13 @@ export const userLogin = async (req: Request, res: Response) => {
       return res.json({ success: false, message: "Missing Details." });
     }
 
+    if (!validator.isEmail(email)) {
+      return res.json({
+        success: false,
+        message: "Please enter a valid email",
+      });
+    }
+
     const { data: user, error } = await supabase
       .from("users")
       .select("*")
