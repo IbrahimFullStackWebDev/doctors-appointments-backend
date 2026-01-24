@@ -4,6 +4,8 @@ import {
   changeStatus,
   getDoctors,
   getUserAppointments,
+  paymentStripe,
+  updatePayment,
   updateProfile,
   userLogin,
   userRegister,
@@ -25,5 +27,7 @@ userRouter.put(
 );
 userRouter.post("/appointments", authUser, getUserAppointments);
 userRouter.put("/change-status", authUser, changeStatus);
+userRouter.post("/payment-stripe", upload.none(), authUser, paymentStripe);
+userRouter.post("/update-payment", upload.none(), authUser, updatePayment);
 
 export default userRouter;

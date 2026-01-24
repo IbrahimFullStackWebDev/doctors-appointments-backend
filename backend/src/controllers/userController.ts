@@ -3,11 +3,8 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { createToken } from "../utils/createTokens.js";
-import {
-  BookAppointmentsType,
-  DoctorDataType,
-  UserAppointmentInfo,
-} from "../types/index.js";
+import { BookAppointmentsType, DoctorDataType } from "../types/index.js";
+import "dotenv/config";
 import uploadImage from "../utils/uploadImage.js";
 export const userRegister = async (req: Request, res: Response) => {
   try {
@@ -292,5 +289,70 @@ export const changeStatus = async (req: Request, res: Response) => {
     const err = error as Error;
     console.log(err);
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+export const paymentStripe = async (req: Request, res: Response) => {
+  try {
+    const { appointmentId, doctorName } = req.body;
+    const { origin } = req.headers;
+
+    const { data: appointmentData, error } = await supabase
+      .from("appointments")
+      .select("*")
+      .eq("id", Number(appointmentId))
+      .single();
+
+    if (!appointmentData || appointmentData.cancelled) {
+      return res.json({
+        success: false,
+        message: "Appointment Cancelled or Not Found",
+      });
+    }
+
+    const line_items = [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `Appointment with Dr. ${doctorName}`,
+          },
+          unit_amount: appointmentData.amount * 100,
+        },
+        quantity: 1,
+      },
+    ];
+
+    const session = await stripe.checkout.sessions.create({
+      success_url: `${origin}/my-appointments?success=true&appointmentId=${appointmentId}`,
+      cancel_url: `${origin}/my-appointments?success=false`,
+      line_items: line_items,
+      mode: "payment",
+    });
+
+    res.json({ success: true, session_url: session.url });
+  } catch (error: any) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const updatePayment = async (req: any, res: any) => {
+  try {
+    const { appointmentId, success } = req.body;
+
+    if (success === "true") {
+      const { error } = await supabase
+        .from("appointments")
+        .update({ payment: true })
+        .eq("id", Number.parseInt(appointmentId));
+      res.json({ success: true, message: "Payment updated successfully" });
+    } else {
+      res.json({ success: false, message: "Payment failed" });
+    }
+  } catch (error: any) {
+    res.json({ success: false, message: error.message });
   }
 };
