@@ -8,7 +8,14 @@ import doctorRouter from "./routes/doctorRoute.js";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://doctors-appointments-admin-8v9p.onrender.com",
+      "http://localhost:5173",
+    ],
+  }),
+);
 
 const Port: string | number = (process.env.PORT as string) || 4000;
 
