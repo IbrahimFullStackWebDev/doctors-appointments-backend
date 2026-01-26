@@ -12,6 +12,7 @@ app.use(
   cors({
     origin: [
       "https://doctors-appointments-admin-8v9p.onrender.com",
+      "https://doctors-appointments-frontend-yh0q.onrender.com",
       "http://localhost:5173",
     ],
   }),
